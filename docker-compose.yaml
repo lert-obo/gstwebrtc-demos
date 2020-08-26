@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  # uncomment the sendrecv you would like to use
+  #
+  recvonly-gst:
+    build: ./recvonly/gst
+    tty: true
+    container_name: recvonly-gst
+    environment:
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - $HOME/.Xauthority:/root/.Xauthority 
+      - "./recvonly/gst:/opt"
+    network_mode: host
+  # sendrecv-gst:
+  #   build: ./sendrecv/gst
+  #   tty: true
+  #   environment:
+  #     - DISPLAY
+  #     - QT_X11_NO_MITSHM=1
+  #   volumes:
+  #     - $HOME/.Xauthority:/root/.Xauthority 
+  #     - "./sendrecv/gst:/opt"
+  #   network_mode: host
+  # sendrecv-gst-java:
+  #   build: ./sendrecv/gst-java
+  #sendrecv-gst-rust:
+  #  build: ./sendrecv/gst-rust
+  sendrecv-js:
+    build: ./recvonly/js
+    container_name: recvonly-js
+    ports:
+      - 8080:80
+    depends_on:
+      - signalling
+    volumes:
+      - "./recvonly/js:/usr/share/nginx/html"
+  signalling:
+    build: ./signalling
+    ports:
+      - 8443:8443
